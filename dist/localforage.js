@@ -2759,7 +2759,11 @@ var LocalForage = function () {
             });
         })["catch"](function () {
             setDriverToConfig();
-            var error = new Error('No available storage method found.');
+            var error = ('No available storage method found.');
+            globalThis.process.on('unhandledRejection', (reason, p) => {
+                console.trace('Unhandled Rejection at: Promise', p, 'reason:', reason)
+                // application specific logging, throwing an error, or other logic here
+              })
             self._driverSet = Promise$1.reject(error);
             return self._driverSet;
         });
