@@ -337,10 +337,6 @@ class LocalForage {
 
                     setDriverToConfig();
                     const error = ('No available storage method found.');
-                    const ignoreReject = (reason, p) => {
-                        console.trace('Unhandled Rejection at: Promise', p, 'reason:', reason)
-                        // application specific logging, throwing an error, or other logic here
-                      }
                     self._driverSet = Promise.reject(error);
                     return self._driverSet;
                 }
