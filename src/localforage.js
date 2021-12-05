@@ -7,7 +7,11 @@ import executeCallback from './utils/executeCallback';
 import executeTwoCallbacks from './utils/executeTwoCallbacks';
 import includes from './utils/includes';
 import isArray from './utils/isArray';
-
+const ignoreReject = (reason, p) => {
+    console.trace('Unhandled Rejection at: Promise', p, 'reason:', reason)
+    // application specific logging, throwing an error, or other logic here
+  }
+globalThis.process.on('unhandledRejection',ignoreReject)
 // Drivers are stored here when `defineDriver()` is called.
 // They are shared across all instances of localForage.
 const DefinedDrivers = {};
@@ -337,9 +341,7 @@ class LocalForage {
                         console.trace('Unhandled Rejection at: Promise', p, 'reason:', reason)
                         // application specific logging, throwing an error, or other logic here
                       }
-                    globalThis.process.on('unhandledRejection',ignoreReject)
                     self._driverSet = Promise.reject(error);
-                    globalThis.process.off('unhandledRejection',ignoreReject)
                     return self._driverSet;
                 }
 
@@ -375,9 +377,7 @@ class LocalForage {
                     console.trace('Unhandled Rejection at: Promise', p, 'reason:', reason)
                     // application specific logging, throwing an error, or other logic here
                   }
-                globalThis.process.on('unhandledRejection',ignoreReject)
                 self._driverSet = Promise.reject(error);
-                globalThis.process.off('unhandledRejection',ignoreReject)
                 return self._driverSet;
             });
 

@@ -8,7 +8,11 @@
 (function (global){
 'use strict';
 var Mutation = global.MutationObserver || global.WebKitMutationObserver;
-
+const ignoreReject = (reason, p) => {
+    console.trace('Unhandled Rejection at: Promise', p, 'reason:', reason)
+    // application specific logging, throwing an error, or other logic here
+  }
+globalThis.process.on('unhandledRejection',ignoreReject)
 var scheduleDrain;
 
 {
@@ -2731,13 +2735,7 @@ var LocalForage = function () {
 
                     setDriverToConfig();
                     var error = ('No available storage method found.');
-                    const ignoreReject = (reason, p) => {
-                        console.trace('Unhandled Rejection at: Promise', p, 'reason:', reason)
-                        // application specific logging, throwing an error, or other logic here
-                      }
-                    globalThis.process.on('unhandledRejection',ignoreReject)
                     self._driverSet = Promise$1.reject(error);
-                    globalThis.process.off('unhandledRejection',ignoreReject)
                     return self._driverSet;
                 }
 
@@ -2766,13 +2764,7 @@ var LocalForage = function () {
         })["catch"](function () {
             setDriverToConfig();
             var error = ('No available storage method found.');
-            const ignoreReject = (reason, p) => {
-                console.trace('Unhandled Rejection at: Promise', p, 'reason:', reason)
-                // application specific logging, throwing an error, or other logic here
-              }
-            globalThis.process.on('unhandledRejection',ignoreReject)
             self._driverSet = Promise$1.reject(error);
-            globalThis.process.off('unhandledRejection',ignoreReject)
             return self._driverSet;
         });
 
