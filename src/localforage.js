@@ -332,10 +332,14 @@ class LocalForage {
                     }
 
                     setDriverToConfig();
-                    const error = new Error(
-                        'No available storage method found.'
-                    );
+                    const error = ('No available storage method found.');
+                    const ignoreReject = (reason, p) => {
+                        console.trace('Unhandled Rejection at: Promise', p, 'reason:', reason)
+                        // application specific logging, throwing an error, or other logic here
+                      }
+                    globalThis.process.on('unhandledRejection',ignoreReject)
                     self._driverSet = Promise.reject(error);
+                    globalThis.process.off('unhandledRejection',ignoreReject)
                     return self._driverSet;
                 }
 
@@ -366,8 +370,14 @@ class LocalForage {
             })
             .catch(() => {
                 setDriverToConfig();
-                const error = new Error('No available storage method found.');
+                const error = ('No available storage method found.');
+                const ignoreReject = (reason, p) => {
+                    console.trace('Unhandled Rejection at: Promise', p, 'reason:', reason)
+                    // application specific logging, throwing an error, or other logic here
+                  }
+                globalThis.process.on('unhandledRejection',ignoreReject)
                 self._driverSet = Promise.reject(error);
+                globalThis.process.off('unhandledRejection',ignoreReject)
                 return self._driverSet;
             });
 

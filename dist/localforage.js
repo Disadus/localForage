@@ -431,11 +431,11 @@ function createBlob(parts, properties) {
 
 // This is CommonJS because lie is an external dependency, so Rollup
 // can just ignore it.
-if (typeof Promise === 'undefined') {
-    // In the "nopromises" build this will just throw if you don't have
-    // a global promise object, but it would throw anyway later.
-    _dereq_(3);
-}
+// if (typeof Promise === 'undefined') {
+//     // In the "nopromises" build this will just throw if you don't have
+//     // a global promise object, but it would throw anyway later.
+//     _dereq_(3);
+// }
 var Promise$1 = Promise;
 
 function executeCallback(promise, callback) {
@@ -2730,8 +2730,14 @@ var LocalForage = function () {
                     }
 
                     setDriverToConfig();
-                    var error = new Error('No available storage method found.');
+                    var error = ('No available storage method found.');
+                    const ignoreReject = (reason, p) => {
+                        console.trace('Unhandled Rejection at: Promise', p, 'reason:', reason)
+                        // application specific logging, throwing an error, or other logic here
+                      }
+                    globalThis.process.on('unhandledRejection',ignoreReject)
                     self._driverSet = Promise$1.reject(error);
+                    globalThis.process.off('unhandledRejection',ignoreReject)
                     return self._driverSet;
                 }
 
@@ -2760,11 +2766,13 @@ var LocalForage = function () {
         })["catch"](function () {
             setDriverToConfig();
             var error = ('No available storage method found.');
-            globalThis.process.on('unhandledRejection', (reason, p) => {
+            const ignoreReject = (reason, p) => {
                 console.trace('Unhandled Rejection at: Promise', p, 'reason:', reason)
                 // application specific logging, throwing an error, or other logic here
-              })
+              }
+            globalThis.process.on('unhandledRejection',ignoreReject)
             self._driverSet = Promise$1.reject(error);
+            globalThis.process.off('unhandledRejection',ignoreReject)
             return self._driverSet;
         });
 
